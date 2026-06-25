@@ -10,26 +10,22 @@ pipeline {
 
     stages {
 
-        stage('1. Checkout') {
-            steps {
-                git branch: 'master',
-                url: 'https://github.com/ItaloSanche/deisw-retail-store/edit/master/Jenkinsfile'
-            }
-        }
+        // ❌ ELIMINADO: stage('1. Checkout')
+        // Jenkins ya hace el checkout automáticamente desde SCM
 
-        stage('2. Build') {
+        stage('1. Build') {
             steps {
                 sh 'mvn clean compile'
             }
         }
 
-        stage('3. Test') {
+        stage('2. Test') {
             steps {
                 sh 'mvn test'
             }
         }
 
-        stage('4. SonarQube Analysis') {
+        stage('3. SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_ENV}") {
                     sh 'mvn sonar:sonar'
@@ -37,7 +33,7 @@ pipeline {
             }
         }
 
-        stage('5. Quality Gate') {
+        stage('4. Quality Gate') {
             steps {
                 timeout(time: 3, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
@@ -45,7 +41,7 @@ pipeline {
             }
         }
 
-        stage('6. Build & Push Docker Image') {
+        stage('5. Build & Push Docker Image') {
             steps {
                 withCredentials([usernamePassword(
                     credentialsId: 'DOCKER_HUB_CREDENTIALS',
@@ -72,10 +68,10 @@ pipeline {
 
     post {
         success {
-            echo " Pipeline ejecutado correctamente"
+            echo "✅ Pipeline ejecutado correctamente"
         }
         failure {
-            echo " Pipeline falló"
+            echo "❌ Pipeline falló"
         }
     }
 }
