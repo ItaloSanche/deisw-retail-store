@@ -10,7 +10,7 @@ pipeline {
 
     stages {
 
-        // ❌ ELIMINADO: stage('1. Checkout')
+        //  ELIMINADO: stage('1. Checkout')
         // Jenkins ya hace el checkout automáticamente desde SCM
 
         stage('1. Build') {
@@ -68,10 +68,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Pipeline ejecutado correctamente"
+            echo " Pipeline ejecutado correctamente"
         }
         failure {
-            echo "❌ Pipeline falló"
+            echo "Pipeline falló"
         }
     }
 }
