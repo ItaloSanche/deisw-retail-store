@@ -1,27 +1,37 @@
-# Build stage: Maven + Temurin 26 JDK
-# ---------- BUILD STAGE ----------
-FROM maven:3.9.9-eclipse-temurin-21 AS builder
+# ==============================
+# STAGE 1: BUILD (Maven + Temurin 24)
+# ==============================
+FROM maven:3.9.11-eclipse-temurin-24-noble AS build
 
-WORKDIR /app
+WORKDIR /workspace
 
-# Copiamos todo el proyecto
+# Copiamos pom.xml y descargamos dependencias (cache)
+COPY pom.xml .
+RUN mvn -B -f pom.xml -DskipTests dependency:go-offline
+
+# Copiamos el resto del proyecto
 COPY . .
 
-# Compilamos el proyecto (sin tests para acelerar)
-RUN mvn clean package -DskipTests
+# Compilamos el proyecto
+RUN mvn -B -DskipTests package
 
 
-# ---------- RUNTIME STAGE ----------
-FROM eclipse-temurin:21-jdk
+# ==============================
+# STAGE 2: RUNTIME (JRE ligero)
+# ==============================
+FROM eclipse-temurin:24-jre-noble
 
 WORKDIR /app
 
-# Copiamos el .jar generado desde el builder
-COPY --from=builder /app/target/*.jar app.jar
+# Copiamos el JAR generado
+COPY --from=build /workspace/target/*.jar app.jar
 
-# Puerto típico Spring Boot
-EXPOSE 8080
+# Variables de entorno configurables
+ENV SPRING_PROFILES_ACTIVE=dev
+ENV PORT=8091
+ENV JAVA_OPTS=""
 
-# Ejecutamos la app
-ENTRYPOINT ["java", "-jar", "app.jar"]
+EXPOSE 8091
 
+# Ejecución flexible
+ENTRYPOINT ["sh","-c","java $JAVA_OPTS -Dspring.profiles.active=${SPRING_PROFILES_ACTIVE} -Dserver.port=${PORT} -jar /app/app.jar"]
