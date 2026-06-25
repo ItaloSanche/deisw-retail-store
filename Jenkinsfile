@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        REGISTRY_USER = "TU_USUARIO_DOCKER"
+        REGISTRY_USER = "italo750"
         IMAGE_NAME = "retail-store-TU_CODIGO"
         TAG = "v1"
         SONARQUBE_ENV = "MiSonarServer"
@@ -13,7 +13,7 @@ pipeline {
         stage('1. Checkout') {
             steps {
                 git branch: 'master',
-                url: 'https://github.com/TU_USUARIO/deisw-retail-store.git'
+                url: 'https://github.com/ItaloSanche/deisw-retail-store/edit/master/Jenkinsfile'
             }
         }
 
@@ -72,10 +72,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Pipeline ejecutado correctamente"
+            echo " Pipeline ejecutado correctamente"
         }
         failure {
-            echo "❌ Pipeline falló"
+            echo " Pipeline falló"
         }
     }
 }
