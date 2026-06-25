@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         REGISTRY_USER = "italo750"
-        IMAGE_NAME = "retail-store-TU_CODIGO"
+        IMAGE_NAME = "retail-store-u202316967"
         TAG = "v1"
         SONARQUBE_ENV = "MiSonarServer"
     }
